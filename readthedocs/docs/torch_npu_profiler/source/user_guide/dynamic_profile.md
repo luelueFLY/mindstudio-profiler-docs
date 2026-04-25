@@ -68,17 +68,84 @@ for step in steps:
 ### 说明
 
 - `dp.start()` 适合把采集范围缩小到指定代码位置附近。
-- `start_config_path` 需要用户手动创建完整的 `profiler_config.json`。
 - `dp.start()` 不感知后续配置文件修改，在一次任务执行过程中只触发一次采集。
 - 若 `dp.init()` 触发的动态采集已经在执行中，`dp.start()` 不会生效；若 `dp.init()` 对应采集已结束，则 `dp.start()` 可继续触发新的采集任务。
 
-## 配置文件与日志
 
-- 配置字段说明详见 [profiler_config.json 参考](../reference/profiler_config_reference.md)。
-- 维测日志说明详见 [dynamic_profile 维测日志](../reference/profiler_config_reference.md#dynamic_profile-维测日志)。
+# `profiler_config.json` 配置文件
 
-## 使用建议
+`profiler_config.json` 推荐使用共享存储保存。以下是默认配置示例：
 
-- 推荐使用共享存储保存 `profiler_config_path`。
-- `start_step` 应大于当前已执行 step，且不超过最大 step。
-- 结果查看方式与常规采集一致，详见 [结果文件与查看方式](./result_files_and_view.md)。
+```json
+{
+  "activities": ["CPU", "NPU"],
+  "prof_dir": "./",
+  "analyse": false,
+  "record_shapes": false,
+  "profile_memory": false,
+  "with_stack": false,
+  "with_flops": false,
+  "with_modules": false,
+  "active": 1,
+  "warmup": 0,
+  "start_step": 0,
+  "is_rank": false,
+  "rank_list": [],
+  "experimental_config": {
+    "profiler_level": "Level0",
+    "aic_metrics": "AiCoreNone",
+    "l2_cache": false,
+    "op_attr": false,
+    "gc_detect_threshold": null,
+    "data_simplification": true,
+    "record_op_args": false,
+    "export_type": ["text"],
+    "mstx": false,
+    "mstx_domain_include": [],
+    "mstx_domain_exclude": [],
+    "host_sys": [],
+    "sys_io": false,
+    "sys_interconnection": false
+  }
+}
+```
+
+### 主要字段
+
+| 参数 | 说明 |
+| --- | --- |
+| `start_step` | 开始采集的 step。`0` 表示不采集，`-1` 表示保存配置后的下个 step 开始采集。 |
+| `activities` | 采集 CPU、NPU 事件列表。 |
+| `prof_dir` | 采集结果落盘目录。 |
+| `analyse` | 是否自动解析。 |
+| `record_shapes` | 是否采集输入 shape 和 type。 |
+| `profile_memory` | 是否采集显存占用。 |
+| `with_stack` | 是否采集调用栈。 |
+| `with_flops` | 是否采集浮点操作信息。 |
+| `with_modules` | 是否采集 modules 层级 Python 调用栈。 |
+| `active` | 实际采集的 step 数。 |
+| `warmup` | 预热 step 数。 |
+| `is_rank` | 是否开启指定 Rank 采集。 |
+| `rank_list` | 需要采集的 Rank ID 列表。 |
+| `async_mode` | 是否开启异步解析。 |
+| `experimental_config` | 扩展采集配置。 |
+| `metadata` | 自定义元数据。 |
+
+## dynamic_profile 维测日志
+
+启用 `dynamic_profile` 后，会在 `profiler_config_path` 下自动生成日志目录，典型结构如下：
+
+```text
+profiler_config_path/
+├── log
+│   ├── dp_ubuntu_xxxxxx_rank_*.log
+│   ├── dp_ubuntu_xxxxxx_rank_*.log.1
+│   ├── monitor_dp_ubuntu_xxxxxx_rank_*.log
+│   ├── monitor_dp_ubuntu_xxxxxx_rank_*.log.1
+├── profiler_config.json
+└── shm
+```
+
+- `dp_*.log`：记录动态采集执行过程中的 INFO、WARNING、ERROR。
+- `monitor_dp_*.log`：记录 `profiler_config.json` 每次修改是否生效，以及 dynamic_profile 进程的结束。
+- `shm`：Python 3.7 环境下用于共享内存映射的目录。程序异常终止时，需要手动清理残留文件。

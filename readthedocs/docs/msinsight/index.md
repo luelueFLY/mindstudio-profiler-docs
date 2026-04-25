@@ -9,11 +9,11 @@
   [![License](https://badgen.net/badge/License/MulanPSL-2.0/blue)](./License) [![Version](https://badgen.net/badge/Version/8.3.0/green)](https://gitcode.com/Ascend/msinsight/releases/tag_MindStudio_8.3.0) [![Ascend](https://img.shields.io/badge/Hardware-Ascend-orange.svg)](https://www.hiascend.com/)
 </div>
 
-## 📢 最新动态
+## ✨ 最新动态
 
 - **[2026.2.04]** 🎉 **MindStudio Insight 26.0.0-alpha.1版本上线！** 聚焦**hostbound**问题定位跟**RL**性能分析优化，开启昇腾 AI 调优新体验。
 
-## 📌 简介
+## ℹ️ 简介
 
 **MindStudio Insight** 是专为昇腾 AI 开发者打造的深度可视化调优分析工具。它通过可视化手段呈现真实的软硬件运行数据，帮助开发者在天级时间内精准定位并解决性能瓶颈。
 
@@ -38,7 +38,7 @@
 </div>
 
 <details>
-<summary>🔍 目录结构</summary>
+<summary style="font-size: 24px; font-weight: bold;">🗺️ 目录结构</summary>
 
 ```tex
 ├── build                              # 构建脚本 
@@ -88,12 +88,11 @@
 
 | 发布版本 | 发布时间        | 发布Tag       | 兼容性说明    |
 | ------- | --------------- | ------------- | ------------- |
-| 26.0.0-alpha.1 | 2026/02/04  | tag_MindStudio_26.0.0-alpha.1 | 兼容昇腾CANN 8.5.0及以前版本。请参考[CANN安装指南](https://www.hiascend.com/cann)获取CANN安装包。 |
-
+| 26.0.0-alpha.1 | 2026/02/04  | tag_MindStudio_26.0.0-alpha.1 | 兼容昇腾CANN 8.5.0及以前版本。请参考[CANN快速安装](https://www.hiascend.com/cann/download)获取CANN安装包。 |
 
 **[查看完整版本发布说明](./source/release_notes.md)**
 
-## 🛠️ 安装
+## 📦 安装
 
 MindStudio Insight工具支持在Windows、Linux，以及macOS系统中安装使用，并且支持通过插件方式安装，具体安装操作可参见[MindStudio Insight安装指南](./source/user_guide/mindstudio_insight_install_guide.md)。
 
@@ -115,11 +114,11 @@ MindStudio Insight工具支持导入并展示多种格式的性能数据文件�
 | db文件   | - 系统调优：建议单文件大小不超过1GB。<br> - 服务化调优：建议单文件大小不超过1GB。 | - 系统调优：单文件大小不超过20GB。<br> - 服务化调优：单文件大小不超过10GB。 |
 | csv文件  | csv格式的文件存在于text数据中，建议单文件大小不超过500MB。     | 单文件大小不超过2GB。  |
 
-## 💻 基础操作
+## 📘 基础操作
 
 介绍MindStudio Insight工具的基础设置，数据导入，快捷键使用等基础操作。具体请参见[MindStudio Insight基础操作](./source/user_guide/basic_operations.md)。
 
-## 📖 特性介绍
+## ⚙️ 特性介绍
 
 MindStudio Insight工具支持系统调优、算子调优、服务化调优和内存调优，可视化呈现数据情况，助力开发者快速完成性能调优。
 
@@ -164,18 +163,25 @@ MindStudio Insight工具支持系统调优、算子调优、服务化调优和�
   | ----------------- | ------------------------------------------------------------ | --------------------------------------------- |
   | 内存详情（Leaks） | 通过调用栈图、折线块图和内存拆解图，将内存情况直观地呈现出来，便于开发者分析定位内存问题，有效缩短定位时间。 | 支持msLeaks工具采集到的db格式的内存结果文件。 |
 
-## 📝 相关信息
+## 🛠️ 贡献指南
+
+
+## ⚖️ 相关信息
 
 - [FAQ](./source/user_guide/FAQ.md)
 - 许可证 <br>
   MindStudio Insight工具的使用许可证，具体请参见[LICENSE](https://gitcode.com/Ascend/msinsight/blob/master/License)。<br>MindStudio Insight工具docs目录下的文档适用CC-BY 4.0许可证，具体请参见[DOC LICENSE](https://gitcode.com/Ascend/msinsight/blob/master/docs/LICENSE)。
 - [安全 && 免责声明](https://gitcode.com/Ascend/msinsight/blob/master/DISCLAIMER.md)
 
-## 💬 建议与交流
+## 🤝 建议与交流
 
-欢迎大家为社区做贡献。如果有任何疑问或建议，请提交[Issues](https://gitcode.com/Ascend/msinsight/issues)，我们会尽快回复。感谢您的支持。
+欢迎大家为社区做贡献。如果有任何疑问或建议，请提交 [Issues](https://gitcode.com/Ascend/msit/issues)，我们会尽快回复。感谢您的支持。
 
-## 🤝 致谢
+|                                      📱 关注 MindStudio 公众号                                       | 💬 更多交流与支持                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|:-----------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| <img src="https://raw.gitcode.com/Ascend/msprobe/raw/master/source/figures/readme/officialAccount.jpg" width="120"><br><sub>*扫码关注获取最新动态*</sub> | 💡 **加入微信交流群**：<br>关注公众号，回复“交流群”即可获取入群二维码。<br><br>🛠️ **其他渠道**：<br>👉 昇腾助手：[![WeChat](https://img.shields.io/badge/WeChat-07C160?style=flat-square&logo=wechat&logoColor=white)](https://gitcode.com/Ascend/msit/blob/master/source/figures/readme/xiaozhushou.png)<br>👉 昇腾论坛：[![Website](https://img.shields.io/badge/Website-%231e37ff?style=flat-square&logo=RSS&logoColor=white)](https://www.hiascend.com/forum/) |
+
+## 🙏 致谢
 
 MindStudio Insight由华为公司的下列部门联合贡献：
 
@@ -185,17 +191,4 @@ MindStudio Insight由华为公司的下列部门联合贡献：
 
 ## 关于MindStudio团队
 
-华为MindStudio全流程开发工具链团队致力于提供端到端的昇腾AI应用开发解决方案，使能开发者高效完成训练开发、推理开发和算子开发。您可以通过以下渠道更深入了解华为MindStudio团队：
-<div style="display: flex; align-items: center; gap: 10px;">
-    <span>MindStudio公众号：</span>
-    <img width="100" src="./source/user_guide/figures/readme/officialAccount.jpg" />
-    <span style="margin-left: 20px;">昇腾小助手：</span>
-    <a href="https://gitcode.com/Ascend/msinsight/blob/master/source/user_guide/figures/readme/xiaozhushou.png">
-        <img src="https://camo.githubusercontent.com/22bbaa8aaa1bd0d664b5374d133c565213636ae50831af284ef901724e420f8f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f5765436861742d3037433136303f7374796c653d666f722d7468652d6261646765266c6f676f3d776563686174266c6f676f436f6c6f723d7768697465" data-canonical-src="./source/user_guide/figures/readme/xiaozhushou.png" style="max-width: 100%;">
-    </a>
-    <span style="margin-left: 20px;">昇腾论坛：</span>
-    <a href="https://www.hiascend.com/forum/" rel="nofollow">
-        <img src="https://camo.githubusercontent.com/dd0b7ef70793ab93ce46688c049386e0755a18faab780e519df5d7f61153655e/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f576562736974652d2532333165333766663f7374796c653d666f722d7468652d6261646765266c6f676f3d6279746564616e6365266c6f676f436f6c6f723d7768697465" data-canonical-src="https://img.shields.io/badge/Website-%231e37ff?style=for-the-badge&amp;logo=bytedance&amp;logoColor=white" style="max-width: 100%;">
-    </a>
-</div>
-在公众号中私信【交流群】，可以获取技术交流群二维码
+华为MindStudio全流程开发工具链团队致力于提供端到端的昇腾AI应用开发解决方案，使能开发者高效完成训练开发、推理开发和算子开发。

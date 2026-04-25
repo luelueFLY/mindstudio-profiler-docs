@@ -15,7 +15,7 @@
 **解决方案**
 
 1. 单击[链接](https://developer.microsoft.com/en-US/microsoft-edge/webview2/#download-section)，进入Microsoft官网。
-2. 下载“Evergreen Standalone Installer”中x64的安装包，如[**图 1**  WebView2安装包](#WebView2安装包)所示。
+2. 下载“Evergreen Standalone Installer”中的x64的安装包，如[**图 1**  WebView2安装包](#WebView2安装包)所示。
 
     **图 1**  WebView2安装包<a id="WebView2安装包"></a>    
     ![](./figures/FAQ/webview2_installer_1.png "WebView2安装包")
@@ -68,7 +68,7 @@
 方案一：
 
 1. 在远程登录工具菜单栏单击“Settings \> Configuration“。此处以MobaXterm工具为例。
-2. 选择“X11“页签，在“Clipboard“选项中选择“disable"copy on select"“，如[**图 1**  MobaXterm Configuration](#MobaXterm Configuration)所示。
+2. 选择“X11”页签，在“Clipboard”选项中选择“disable"copy on select"”，如[**图 1**  MobaXterm Configuration](#MobaXterm Configuration)所示。
 
     **图 1**  MobaXterm Configuration<a id="MobaXterm Configuration"></a>  
     ![](./figures/FAQ/MobaXterm-Configuration.png "MobaXterm-Configuration")
@@ -200,7 +200,7 @@ VNC在某些情况下需要通过SSH通道来实现连接，而TCP转发正是�
 
 **问题现象**
 
-在MindStudio Insight工具页面，第一次导入数据显示正常，第二次导入相同的数据时，“概览“界面和“通信“界面显示黑屏。
+在MindStudio Insight工具页面，第一次导入数据显示正常，第二次导入相同的数据时，“概览”界面和“通信”界面显示黑屏。
 
 **解决方案**
 

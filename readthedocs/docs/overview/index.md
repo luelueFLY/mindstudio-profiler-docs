@@ -282,7 +282,7 @@ hide:
         'PyTorch Profiler': '../torch_npu_profiler/',
         'MindSpore Profiler': 'https://www.mindspore.cn/mindinsight/docs/zh-CN/r2.3/performance_profiling_ascend.html',
         'msProf': '../msprof/',
-        'MSTX': 'https://gitcode.com/Ascend/mstx',
+        'MSTX': '../torch_npu_profiler/source/advanced_features/mstx',
         'MSPTI': '../mspti/'
     };
 

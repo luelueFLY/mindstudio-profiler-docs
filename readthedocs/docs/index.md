@@ -17,8 +17,8 @@ hide:
 </p>
 
 <p class="home-actions">
-  <a class="md-button md-button--primary" href="./overview/">查看工具全景</a>
-  <a class="md-button" href="https://www.hiascend.com/developer/software/mindstudio">进入昇腾社区</a>
+  <a class="md-button md-button--primary" href="https://www.hiascend.com/developer/software/mindstudio">进入昇腾社区</a>
+  <a class="md-button" href="./overview/">查看工具全景</a>
 </p>
 
 <style>
@@ -294,7 +294,7 @@ hide:
         'PyTorch Profiler': './torch_npu_profiler/',
         'MindSpore Profiler': 'https://www.mindspore.cn/mindinsight/docs/zh-CN/r2.3/performance_profiling_ascend.html',
         'msProf': './msprof/',
-        'MSTX': 'https://gitcode.com/Ascend/mstx',
+        'MSTX': './torch_npu_profiler/source/advanced_features/mstx',
         'MSPTI': './mspti/'
     };
 

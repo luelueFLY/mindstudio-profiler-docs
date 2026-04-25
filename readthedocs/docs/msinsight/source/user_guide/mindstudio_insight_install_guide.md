@@ -200,7 +200,7 @@ MindStudio Insight工具的安装与可视化呈现对Windows系统及设备配�
   </tr>
   <tr>
     <td>click</td>
-    <td rowspan="13">编译安装Python需要的依赖。<br>其中版本要求为：<br>xlsxwriter&gt;=3.0.6<br>numpy&lt;=1.26.4</td>
+    <td rowspan="13">MindStudio Insight已集成msprof-analyze集群分析工具所依赖的Python库。<br>版本要求见msprof-analyze工具的<a href="https://gitcode.com/Ascend/msprof-analyze/blob/master/requirements/build.txt" class="td-link">build.txt文件</a>。</td>
   </tr>
   <tr>
     <td>tabulate</td>
@@ -253,10 +253,10 @@ MindStudio Insight工具的安装与可视化呈现对Windows系统及设备配�
     pip3 install tqdm
     pip3 install prettytable
     pip3 install ijson
-    pip3 install xlsxwriter
+    pip3 install "xlsxwriter>=3.0.6"
     pip3 install sqlalchemy
-    pip3 install numpy
-    pip3 install pandas
+    pip3 install "numpy<=1.26.4"
+    pip3 install "pandas<=2.3.2"
     pip3 install psutil
     ```
 
@@ -707,7 +707,7 @@ vncserver -localhost -geometry 1920x1080
     - 如果未开启，可执行以下命令，开启MindStudio Insight插件。
 
         ```shell
-        jupyter server extension enable mindstudio_insight_jupyterlab
+        jupyter server extension enable --py mindstudio_insight_jupyterlab
         ```
 
 5. 开启MindStudio Insight插件后，重复操作[3](#jupyter_3)，打开MindStudio Insight工具。

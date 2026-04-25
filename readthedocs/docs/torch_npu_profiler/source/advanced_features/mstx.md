@@ -1,6 +1,6 @@
-# mstx 打点采集
+# MSTX 用户自定义打点
 
-在大集群场景下，完整 Profiling 数据量通常较大、分析链路也更复杂。`mstx` 能够通过自定义打点记录关键函数、关键阶段和特定时间段的开始与结束时间，用于快速定界性能问题。
+在大集群场景下，完整 Profiling 数据量通常较大、分析链路也更复杂。MSTX（MindStudio Tools Extension API）能够通过自定义打点记录关键函数、关键阶段和特定时间段的开始与结束时间，用于快速定界性能问题。
 
 ## 开启方式
 
@@ -48,7 +48,28 @@ torch.matmul()
 torch_npu.npu.mstx.range_end(id)
 ```
 
-## domain 过滤
+### 示例
+在代码中使用MSTX添加自定义打点，采集profiling数据后，可通过MindStudio Insight可视化工具展示，如图1所示。
+```python
+for i in range(2):
+    torch_npu.npu.mstx.mark("code_start")
+    # 获取host耗时
+    range_id1 = torch_npu.npu.mstx.range_start("my_sleep_50us")
+    time.sleep(0.00005)
+    torch_npu.npu.mstx.range_end(range_id1)
+    # 获取host和device耗时
+    range_id2 = torch_npu.npu.mstx.range_start("my_matmul_with_stream", stream= range_stream)
+    result_npu = torch.matmul(a, b)
+    torch_npu.npu.mstx.range_end(range_id2)
+    torch_npu.npu.mstx.mark("code_end")
+```
+
+![img](../figures/zh-cn_image_0000002604255265.png)
+<div style="text-align: center;">
+<strong>图1</strong> mstx数据文件可视化呈现
+</div>
+
+## Domain 过滤
 
 可以通过 `mstx_domain_include` 或 `mstx_domain_exclude` 控制输出哪些 domain 的打点数据，两个参数互斥，若同时配置则仅 `mstx_domain_include` 生效。
 
