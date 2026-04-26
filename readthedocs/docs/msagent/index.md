@@ -1,3 +1,6 @@
+---
+title: msAgent
+---
 !!! info
     更多信息，欢迎查看源码仓: [msAgent](https://gitcode.com/Ascend/msagent)
 <h1 align="center">🚀 msAgent</h1>
@@ -5,7 +8,7 @@
 <p align="center"><strong>面向 Ascend NPU 场景的一站式调试调优 Agent</strong></p>
 
 <p align="center">
-  <img src="https://github.com/luelueFLY/images/blob/main/img/msagent-hello.gif" alt="msAgent">
+  <img src="https://raw.githubusercontent.com/luelueFLY/images/main/img/msagent-hello.gif" alt="msAgent">
 </p>
 
 ## 📢 最新消息
@@ -17,10 +20,10 @@
 
 | 形象 | 名称           | 领域定位 | 说明 |
 |---|--------------|---|--|
-| <img src="docs/images/Hermes.png" alt="Hermes" width="120"> | **Hermes**   | 性能调优：聚焦 Ascend Profiling 分析，覆盖单卡、多卡、集群等场景，擅长快慢卡、慢节点、MFU、通信瓶颈、算子热点、下发调度等性能问题定位与优化建议。 | [Hermes说明](docs/agents/Hermes.md) |
-| <img src="docs/images/Minos.png" alt="Minos" width="120"> | **Minos**    | 文档体验与代码审查辅助：聚焦 README 走查、安装流程验证、Quick Start 体验、新手 onboarding、文档可用性评估，以及 GitCode PR 审查与评审意见整理。 | [Minos说明](docs/agents/Minos.md) |
+| <img src="source/images/Hermes.png" alt="Hermes" width="120"> | **Hermes**   | 性能调优：聚焦 Ascend Profiling 分析，覆盖单卡、多卡、集群等场景，擅长快慢卡、慢节点、MFU、通信瓶颈、算子热点、下发调度等性能问题定位与优化建议。 | [Hermes说明](source/agents/Hermes.md) |
+| <img src="source/images/Minos.png" alt="Minos" width="120"> | **Minos**    | 文档体验与代码审查辅助：聚焦 README 走查、安装流程验证、Quick Start 体验、新手 onboarding、文档可用性评估，以及 GitCode PR 审查与评审意见整理。 | [Minos说明](source/agents/Minos.md) |
 | Coming soon | **Accuracy** | 精度分析与优化。 | 精度调优：聚焦Ascend精度分析与优化，覆盖单卡，多卡，集群等场景，可处理RL训推一致性分析，loss/gnorm NaN分析等常见精度问题 |
-| Coming soon | **Zephyr** | 聚焦 msModelSlim 量化与压缩场景，协助完成模型适配可行性与结构风险评估，辅助完成基础适配器开发。 | [Zephyr说明](docs/agents/Zephyr.md) |
+| <img src="source/images/Zephyr.jpg" alt="Minos" width="120"> | **Zephyr** | 聚焦 msModelSlim 量化与压缩场景，协助完成模型适配可行性与结构风险评估，辅助完成基础适配器开发。 | [Zephyr说明](source/agents/Zephyr.md) |
 ---
 
 ## ⚡ 快速上手
@@ -236,21 +239,21 @@ msagent web --no-ui
 
 不同能力的说明与示例已经按 Agent 拆分：
 
-- `Hermes`：性能调优与 Profiling 分析 Agent 页面，见 [docs/agents/Hermes.md](docs/agents/Hermes.md)
-- `Minos`：文档体验与 GitCode PR 审查 Agent 页面，见 [docs/agents/Minos.md](docs/agents/Minos.md)
-- `Accuracy`: 精度分析与优化 Agent 页面，见[docs/agents/Accuracy.md](docs/agents/Accuracy.md)
-- `Zephyr`：msModelSlim 模型分析与适配 Agent 页面，见 [docs/agents/Zephyr.md](docs/agents/Zephyr.md)
+- `Hermes`：性能调优与 Profiling 分析 Agent 页面，见 [docs/agents/Hermes.md](source/agents/Hermes.md)
+- `Minos`：文档体验与 GitCode PR 审查 Agent 页面，见 [docs/agents/Minos.md](source/agents/Minos.md)
+- `Accuracy`: 精度分析与优化 Agent 页面，见[docs/agents/Accuracy.md](source/agents/Accuracy.md)
+- `Zephyr`：msModelSlim 模型分析与适配 Agent 页面，见 [docs/agents/Zephyr.md](source/agents/Zephyr.md)
 ---
 
 ## 🛠️ 参考文档
 
 后续的配置、扩展、构建和版本说明已经拆分到独立文档，避免首页信息过载，也方便按代码演进单独维护：
 
-- [配置与扩展](docs/configuration-and-extension.md)
+- [配置与扩展](source/configuration-and-extension.md)
   项目本地配置目录、MCP 配置、Skills 扩展与加载顺序。
-- [编译与打包](docs/build-and-package.md)
+- [编译与打包](source/build-and-package.md)
   wheel 构建流程、构建脚本行为、常用构建参数与手动构建方式。
-- [版本与兼容性](docs/version-and-compatibility.md)
+- [版本与兼容性](source/version-and-compatibility.md)
   当前版本、Python 要求、内置 MCP 版本与 Provider 支持情况。
 
 ---

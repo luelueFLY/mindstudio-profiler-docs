@@ -1,6 +1,6 @@
 title: torch_npu.profiler
 nav:
-  - index.md
+  - torch_npu.profiler: index.md
   - source/getting_started/quick_start.md
   - source/user_guide/profile_api.md
   - source/user_guide/dynamic_profile.md

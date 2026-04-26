@@ -71,7 +71,7 @@ python train_sample.py
 
    ```ColdFusion 
     XXX_ascend_pt
-    ├── ASCEND_PROFILER_OUTPUT   // Host侧性能原始数据，用户无需关注
+    ├── ASCEND_PROFILER_OUTPUT   // 解析后的性能数据
     │    ├── analysis.db   
     │    ├── api_statistic.csv 
     │    ├── ascend_pytorch_profiler.db

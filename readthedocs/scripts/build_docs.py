@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import re
 import shutil
 import subprocess
@@ -10,6 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DOCS_ROOT = ROOT / "readthedocs" / "docs"
+SHARED_ASSET_ROOT = DOCS_ROOT / "assets" / "community"
 
 
 TOOLS = [
@@ -35,9 +37,28 @@ TOOLS = [
         "branch": "master",
         "summary": "面向 Ascend NPU 场景的性能问题定位 Agent，提供性能分析与归因辅助能力。",
         "repo": ROOT / "msagent",
-        "source_subdir": None,
+        "source_subdir": "docs",
         "repo_readme": "README.md",
-        "entry_points": [],
+        "entry_points": [
+            ("Hermes", "source/agents/Hermes.md"),
+            ("Minos", "source/agents/Minos.md"),
+            ("Configuration", "source/configuration-and-extension.md"),
+        ],
+        "display_dir_whitelist": {
+            "agents",
+            "images",
+            "test",
+        },
+        "display_file_whitelist": {
+            "agent_tool_skill_filter_rules.md",
+            "build-and-package.md",
+            "configuration-and-extension.md",
+            "context_compaction_guide.md",
+            "document_ux_review.md",
+            "retry_middleware_guide.md",
+            "tag-release.md",
+            "version-and-compatibility.md",
+        },
     },
     {
         "slug": "msprof",
@@ -135,7 +156,7 @@ NAV_ORDER = [
     "dir_structure.md",
 ]
 
-DISPLAY_DIR_WHITELIST = {
+DEFAULT_DISPLAY_DIR_WHITELIST = {
     "getting_started",
     "user_guide",
     "advanced_features",
@@ -144,14 +165,95 @@ DISPLAY_DIR_WHITELIST = {
     "figures"
 }
 
-DISPLAY_FILE_WHITELIST = {
+DEFAULT_DISPLAY_FILE_WHITELIST = {
     "release_notes.md",
     "faq.md",
 }
 
+SHARED_ASSET_EXPORTS = {
+    "officialAccount.jpg": {
+        "repo": ROOT / "msinsight",
+        "branch": "master",
+        "repo_path": "docs/zh/user_guide/figures/readme/officialAccount.jpg",
+    },
+}
+
+BROKEN_SHARED_ASSET_PATTERNS = {
+    re.compile(r"https://raw\.gitcode\.com/[^\"'\s)]+/officialAccount\.(?:png|jpg)", re.IGNORECASE): "officialAccount.jpg",
+}
+
+GITHUB_BLOB_IMAGE_PATTERN = re.compile(
+    r"^https://github\.com/([^/\s]+)/([^/\s]+)/blob/([^/\s]+)/(.+\.(?:png|jpg|jpeg|gif|svg|webp))$",
+    re.IGNORECASE,
+)
+
 
 def run_git(repo: Path, *args: str) -> None:
     subprocess.run(["git", "-C", str(repo), *args], check=True)
+
+
+def relative_asset_path(from_page: Path, asset_name: str) -> str:
+    asset_path = SHARED_ASSET_ROOT / asset_name
+    return Path(os.path.relpath(asset_path, from_page.parent)).as_posix()
+
+
+def rewrite_shared_asset_links(content: str, page_path: Path) -> str:
+    rewritten = content
+    for pattern, asset_name in BROKEN_SHARED_ASSET_PATTERNS.items():
+        rewritten = pattern.sub(relative_asset_path(page_path, asset_name), rewritten)
+    return rewritten
+
+
+def normalize_external_image_url(target: str) -> str:
+    match = re.match(r"^(.*?)([?#].*)?$", target)
+    if not match:
+        return target
+
+    base_target = match.group(1)
+    suffix = match.group(2) or ""
+    github_match = GITHUB_BLOB_IMAGE_PATTERN.match(base_target)
+    if not github_match:
+        return target
+
+    owner, repo, branch, asset_path = github_match.groups()
+    return f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{asset_path}{suffix}"
+
+
+def rewrite_external_image_links(content: str) -> str:
+    rewritten = re.sub(
+        r"(<img\b[^>]*\bsrc=[\"'])([^\"']+)([\"'])",
+        lambda match: f"{match.group(1)}{normalize_external_image_url(match.group(2))}{match.group(3)}",
+        content,
+        flags=re.IGNORECASE,
+    )
+    rewritten = re.sub(
+        r"(!\[[^\]]*]\()([^)]+)(\))",
+        lambda match: f"{match.group(1)}{normalize_external_image_url(match.group(2))}{match.group(3)}",
+        rewritten,
+    )
+    return rewritten
+
+
+def rewrite_msagent_agent_relative_links(content: str, path: Path, tool: dict) -> str:
+    if tool.get("slug") != "msagent":
+        return content
+    if len(path.parts) < 2 or path.parts[-2] != "agents":
+        return content
+
+    rewritten = content.replace('src="../', 'src="../../')
+    rewritten = rewritten.replace("src='../", "src='../../")
+    rewritten = rewritten.replace("](../", "](../../")
+    return rewritten
+
+
+def export_shared_assets() -> None:
+    for asset_name, asset in SHARED_ASSET_EXPORTS.items():
+        export_binary_file(
+            asset["repo"],
+            asset["branch"],
+            asset["repo_path"],
+            SHARED_ASSET_ROOT / asset_name,
+        )
 
 
 def export_latest_branch(repo: Path, branch: str, source_subdir: str, destination: Path) -> None:
@@ -211,6 +313,31 @@ def export_text_file(repo: Path, branch: str, repo_path: str) -> str:
     )
 
 
+def export_binary_file(repo: Path, branch: str, repo_path: str, destination: Path) -> None:
+    candidates = [f"origin/{branch}:{repo_path}", f"HEAD:{repo_path}"]
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    for candidate in candidates:
+        with destination.open("wb") as handle:
+            completed = subprocess.run(
+                ["git", "-C", str(repo), "show", candidate],
+                check=False,
+                stdout=handle,
+                stderr=subprocess.PIPE,
+            )
+        if completed.returncode == 0:
+            return
+
+    file_path = repo / repo_path
+    if file_path.exists():
+        shutil.copy2(file_path, destination)
+        return
+
+    raise subprocess.CalledProcessError(
+        128,
+        ["git", "-C", str(repo), "show", f"origin/{branch}:{repo_path}"],
+    )
+
+
 def reset_generated_targets() -> None:
     legacy_reference_root = DOCS_ROOT / "reference"
     if legacy_reference_root.exists():
@@ -245,26 +372,34 @@ def should_hide_from_nav(path: Path) -> bool:
     return path.name.lower() in NON_NAV_NAMES or is_hidden_mspti_api_context_dir(path)
 
 
-def should_keep_display_path(path: Path) -> bool:
+def display_dir_whitelist(tool: dict) -> set[str]:
+    return DEFAULT_DISPLAY_DIR_WHITELIST | set(tool.get("display_dir_whitelist", set()))
+
+
+def display_file_whitelist(tool: dict) -> set[str]:
+    return DEFAULT_DISPLAY_FILE_WHITELIST | set(tool.get("display_file_whitelist", set()))
+
+
+def should_keep_display_path(path: Path, tool: dict) -> bool:
     relative_parts = [part.lower() for part in path.parts]
     if not relative_parts:
         return True
 
     top_level = relative_parts[0]
-    if top_level in DISPLAY_DIR_WHITELIST:
+    if top_level in display_dir_whitelist(tool):
         return True
-    if len(relative_parts) == 1 and top_level in DISPLAY_FILE_WHITELIST:
+    if len(relative_parts) == 1 and top_level in display_file_whitelist(tool):
         return True
     return False
 
 
-def filter_display_tree(root: Path) -> None:
+def filter_display_tree(root: Path, tool: dict) -> None:
     for path in sorted(root.iterdir(), key=lambda item: len(item.parts), reverse=True):
         if path.name in {".nav.yml", "index.md", "README.md"}:
             continue
         if should_exclude(path):
             continue
-        if should_keep_display_path(path.relative_to(root)):
+        if should_keep_display_path(path.relative_to(root), tool):
             continue
         if path.is_dir():
             shutil.rmtree(path)
@@ -307,9 +442,48 @@ def normalize_repo_path(path: Path) -> Path:
     return normalized
 
 
+def rewrite_repo_readme_assets(content: str, tool: dict) -> tuple[str, list[tuple[Path, Path]]]:
+    readme_dir = Path(tool["repo_readme"]).parent
+    copied_assets: dict[Path, Path] = {}
+
+    def rewrite_target(target: str) -> str:
+        if "://" in target or target.startswith(("#", "mailto:", "javascript:", "data:")):
+            return target
+
+        clean_target = target.split("#", 1)[0].split("?", 1)[0]
+        if not clean_target:
+            return target
+
+        repo_candidate = normalize_repo_path(readme_dir / clean_target)
+        source_path = tool["repo"] / repo_candidate
+        if not source_path.is_file():
+            return target
+
+        generated_target = Path("assets") / "repo" / repo_candidate
+        copied_assets[repo_candidate] = generated_target
+        suffix = target[len(clean_target):]
+        return f"./{generated_target.as_posix()}{suffix}"
+
+    rewritten = re.sub(
+        r"(<img\b[^>]*\bsrc=[\"'])([^\"']+)([\"'])",
+        lambda match: f"{match.group(1)}{rewrite_target(match.group(2))}{match.group(3)}",
+        content,
+        flags=re.IGNORECASE,
+    )
+    rewritten = re.sub(
+        r"(!\[[^\]]*]\()([^)]+)(\))",
+        lambda match: f"{match.group(1)}{rewrite_target(match.group(2))}{match.group(3)}",
+        rewritten,
+    )
+    return rewritten, [(source, destination) for source, destination in copied_assets.items()]
+
+
 def rewrite_missing_local_links(path: Path, root: Path, tool: dict, current_repo_path: Path | None = None) -> None:
     original_content = path.read_text(encoding="utf-8")
     content = original_content
+    content = rewrite_shared_asset_links(content, path)
+    content = rewrite_external_image_links(content)
+    content = rewrite_msagent_agent_relative_links(content, path, tool)
     content = content.replace("](.//README.md", "](index.md")
     content = content.replace("](./README.md", "](index.md")
     content = content.replace("](../advanced_features/README.md", "](../advanced_features/index.md")
@@ -496,7 +670,7 @@ def build_directory_indexes(root: Path, title_prefix: str) -> None:
 
 
 def write_tool_nav(path: Path, tool: dict) -> None:
-    lines = [f"title: {tool['title']}", "nav:", "  - index.md"]
+    lines = [f"title: {tool['title']}", "nav:", f"  - {tool['title']}: index.md"]
     featured_entries = [
         relative
         for _, relative in tool["entry_points"]
@@ -512,7 +686,7 @@ def write_tool_nav(path: Path, tool: dict) -> None:
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def rewrite_repo_readme_links(content: str | None, tool: dict, source_root: Path) -> str:
+def rewrite_repo_readme_links(content: str | None, tool: dict, source_root: Path) -> tuple[str, list[tuple[Path, Path]]]:
     if content is None:
         content = ""
     replacements = {
@@ -525,6 +699,9 @@ def rewrite_repo_readme_links(content: str | None, tool: dict, source_root: Path
     }
     for old, new in replacements.items():
         content = content.replace(old, new)
+    content = content.replace("](docs/", "](source/")
+    content = content.replace('src="docs/', 'src="source/')
+    content = content.replace("src='docs/", "src='source/")
 
     # Allow Markdown links inside aligned HTML wrappers from repo READMEs.
     content = content.replace('<div align="center">', '<div align="center" markdown="1">')
@@ -541,12 +718,13 @@ def rewrite_repo_readme_links(content: str | None, tool: dict, source_root: Path
 
     rewritten = "\n".join(filtered_lines) + "\n"
     rewritten = rewritten.replace("./source/LICENSE", repo_blob_url(tool, "docs/LICENSE"))
+    rewritten, asset_exports = rewrite_repo_readme_assets(rewritten, tool)
     temp_readme = source_root.parent / "_repo_readme_rewrite.md"
     temp_readme.write_text(rewritten, encoding="utf-8")
     rewrite_missing_local_links(temp_readme, source_root, tool, current_repo_path=Path(tool["repo_readme"]))
     final_text = temp_readme.read_text(encoding="utf-8")
     temp_readme.unlink(missing_ok=True)
-    return final_text
+    return final_text, asset_exports
 
 
 def generate_tool_page(tool: dict) -> None:
@@ -558,7 +736,7 @@ def generate_tool_page(tool: dict) -> None:
 
     if source_subdir:
         export_latest_branch(tool["repo"], tool["branch"], source_subdir, source_root)
-        filter_display_tree(source_root)
+        filter_display_tree(source_root, tool)
         build_directory_indexes(source_root, tool["title"])
         if tool["slug"] == "mspti":
             for api_dir in ("c_api", "python_api"):
@@ -572,8 +750,11 @@ def generate_tool_page(tool: dict) -> None:
             rewrite_missing_local_links(markdown_path, source_root, tool)
     write_tool_nav(tool_root / ".nav.yml", tool)
     readme_text = export_text_file(tool["repo"], tool["branch"], tool["repo_readme"])
+    readme_assets: list[tuple[Path, Path]] = []
     if source_subdir:
-        readme_text = rewrite_repo_readme_links(readme_text, tool, source_root)
+        readme_text, readme_assets = rewrite_repo_readme_links(readme_text, tool, source_root)
+    for repo_asset, destination in readme_assets:
+        export_binary_file(tool["repo"], tool["branch"], repo_asset.as_posix(), tool_root / destination)
     repo_notice = "\n".join(
         [
             "!!! info",
@@ -581,11 +762,20 @@ def generate_tool_page(tool: dict) -> None:
             "",
         ]
     )
-    (tool_root / "index.md").write_text(f"{repo_notice}{readme_text}", encoding="utf-8")
+    front_matter = "\n".join(
+        [
+            "---",
+            f"title: {tool['title']}",
+            "---",
+            "",
+        ]
+    )
+    (tool_root / "index.md").write_text(f"{front_matter}{repo_notice}{readme_text}", encoding="utf-8")
 
 
 def main() -> None:
     reset_generated_targets()
+    export_shared_assets()
     for tool in TOOLS:
         generate_tool_page(tool)
 
