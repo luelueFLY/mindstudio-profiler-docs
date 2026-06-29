@@ -3,5 +3,5 @@ nav:
   - index.md
   - 集群场景动态 Profile 性能数据采集与分析指导: dynamic-profile-case
   - 强化学习场景性能数据采集及分析指导: reinforcement-learning-case
+  - Operator MFU 调优指南: operator_mfu_guide/operator_mfu_guide.md
   - Host Profiling 常用检测工具: host-profiling-tools
-

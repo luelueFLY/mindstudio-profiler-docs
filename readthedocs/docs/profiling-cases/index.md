@@ -20,6 +20,12 @@ title: Profiling Cases
 
     面向强化学习场景，整理 Profiling 数据采集、MSTX 打点、msprof-analyze 分析以及端到端调优方法。
 
+-   **[Operator MFU 调优指南](./operator_mfu_guide/operator_mfu_guide.md)**
+
+    ---
+
+    面向 Operator 级别的 MFU 分析与调优场景，提供指标解读、分析流程以及常见优化方法。
+
 -   **[Host Profiling 常用检测工具](./host-profiling-tools/)**
 
     ---

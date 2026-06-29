@@ -160,6 +160,7 @@ DEFAULT_DISPLAY_DIR_WHITELIST = {
     "getting_started",
     "user_guide",
     "advanced_features",
+    "best_practices",
     "c_api",
     "python_api",
     "figures"
